@@ -1,6 +1,4 @@
-FROM debian:buster
-
-ARG RUNNER_VERSION="2.169.1"
+FROM ubuntu:focal
 
 ENV GITHUB_PERSONAL_TOKEN ""
 ENV GITHUB_OWNER ""
@@ -29,10 +27,6 @@ RUN usermod -aG docker github
 
 USER github
 WORKDIR /home/github
-
-RUN curl -O -L https://github.com/actions/runner/releases/download/v$RUNNER_VERSION/actions-runner-linux-x64-$RUNNER_VERSION.tar.gz
-RUN tar xzf ./actions-runner-linux-x64-$RUNNER_VERSION.tar.gz
-RUN sudo ./bin/installdependencies.sh
 
 COPY --chown=github:github entrypoint.sh ./entrypoint.sh
 RUN sudo chmod u+x ./entrypoint.sh
