@@ -1,35 +1,8 @@
-FROM ubuntu:focal
+# Container image that runs your code
+FROM alpine:3.10
 
-ENV GITHUB_PERSONAL_TOKEN ""
-ENV GITHUB_OWNER ""
-ENV GITHUB_REPOSITORY ""
+# Copies your code file from your action repository to the filesystem path `/` of the container
+COPY entrypoint.sh /entrypoint.sh
 
-RUN apt-get update \
-    && apt-get install -y \
-        curl \
-        sudo \
-        git \
-        jq \
-        tar \
-        gnupg2 \
-        apt-transport-https \
-        ca-certificates  \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN useradd -m github && \
-    usermod -aG sudo github && \
-    echo "%sudo ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-#setup docker runner 
-RUN curl -sSL https://get.docker.com/ | sh
-RUN usermod -aG docker github 
-
-USER github
-WORKDIR /home/github
-
-COPY --chown=github:github entrypoint.sh ./entrypoint.sh
-RUN sudo chmod u+x ./entrypoint.sh
-
-ENTRYPOINT ["/home/github/entrypoint.sh"]
-
+# Code file to execute when the docker container starts up (`entrypoint.sh`)
+ENTRYPOINT ["/entrypoint.sh"]
